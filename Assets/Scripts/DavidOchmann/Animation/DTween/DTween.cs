@@ -102,6 +102,11 @@ namespace DavidOchmann.Animation
 
 
 		/** Ease object to values. */
+		public Tween To(float duration)
+		{
+			return To( this, duration, ObjectToDictionary( new {} ), Linear.EaseNone );
+		}
+
 		public Tween To(object target, float duration, object setup)
 		{
 			return To( target, duration, ObjectToDictionary( setup ), Quad.EaseOut );
