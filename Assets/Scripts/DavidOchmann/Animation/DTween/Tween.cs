@@ -38,7 +38,8 @@ namespace DavidOchmann.Animation
 			this.delay = setup.ContainsKey( KEY_DELAY ) ? Convert.ToSingle( setup[ KEY_DELAY ] ) : 0;
 			this.ease = ease != null ? ease : Quad.EaseOut;
 			
-			initBeginValues();
+			Reset();
+			Update();
 		}
 
 
@@ -124,29 +125,10 @@ namespace DavidOchmann.Animation
 			return false;
 		}
 
-		public static MethodInfo GetMethodInfo(String value)
-		{
-			String[] split = value.Split( new Char[] { '.' } );
-
-			String typeName = split[ 0 ];
-			String methodName = split[ 1 ];
-
-			Type type = Type.GetType( typeName );
-
-			MethodInfo methodInfo = type.GetMethod( methodName, BindingFlags.Public | BindingFlags.Static );
-
-			return methodInfo;
-		}
-
 
 		/**
 		 * Getter / Setter.
 		 */
-
-		public bool GetIsFirstFrame()
-		{
-			return frame == 0;
-		}
 
 		public bool GetComplete()
 		{
@@ -228,6 +210,7 @@ namespace DavidOchmann.Animation
 		{
 			frame = 0;
 			hasCompleted = false;
+			beginValues = null;
 		}
 
 		public void Kill()
@@ -239,12 +222,28 @@ namespace DavidOchmann.Animation
 		public void Update()
 		{
 			updateCurrentFrameProperties();
+			updateBeginValueInit();
 		}
 
 
 		/**
 		 * Private interface.
 		 */
+
+		private void updateBeginValueInit()
+		{
+			if( GetStart() && beginValues == null )
+			{
+				initBeginValues();
+				InvokeStart();
+			}
+			else
+			if( beginValues != null )
+				InvokeUpdate();
+
+			if( GetComplete() )
+				InvokeComplete();
+		}
 
 		private void initBeginValues()
 		{

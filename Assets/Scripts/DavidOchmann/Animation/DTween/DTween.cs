@@ -44,18 +44,11 @@ namespace DavidOchmann.Animation
 
 				if( tween != null )
 				{
-					if( tween.GetIsFirstFrame() )
-						tween.InvokeStart();
-
 					tween.Update();
 					InvokeUpdate( tween );
-					tween.InvokeUpdate();
-
+				
 					if( tween.GetComplete() )
-					{
 						tweenList.RemoveAt( i );
-						tween.InvokeComplete();
-					}
 				}
 			}
 		}
@@ -67,7 +60,7 @@ namespace DavidOchmann.Animation
 				for( int i = 0; i < list.Count; ++i )
 				{
 				    Tween tween = list[ i ];
-				    Add( tween, this.overwrite || overwrite );
+				    Add( tween, overwrite || this.overwrite );
 				}
 			}
 
@@ -78,10 +71,8 @@ namespace DavidOchmann.Animation
 		{
 			if( !isFactory )
 			{
-				if( this.overwrite || overwrite )
+				if( overwrite || this.overwrite )
 				{
-					// Override if Object is identical:
-					
 					for( int i = 0; i < tweenList.Count; ++i )
 					{
 					    Tween item = tweenList[ i ];
@@ -98,6 +89,19 @@ namespace DavidOchmann.Animation
 			}
 
 			return tween;
+		}
+
+		public void Kill(bool killTweens = true)
+		{
+			for( int i = tweenList.Count - 1; i >= 0; --i )
+			{
+			    Tween tween = tweenList[ i ];
+			    
+			    if( killTweens )
+			 		tween.Kill();
+			 		
+			 	tweenList.RemoveAt( i );   
+			}
 		}
 
 
@@ -178,19 +182,6 @@ namespace DavidOchmann.Animation
 			}
 
 			return dictionary;
-		}
-
-		public void Kill(bool killTweens = true)
-		{
-			for( int i = tweenList.Count - 1; i >= 0; --i )
-			{
-			    Tween tween = tweenList[ i ];
-			    
-			    if( killTweens )
-			 		tween.Kill();
-			 		
-			 	tweenList.RemoveAt( i );   
-			}
 		}
 	}
 }

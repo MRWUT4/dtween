@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\DavidOchmann\Animation\Components\Mutate.cs" />
+     <Compile Include="Assets\Scripts\DavidOchmann\Animation\Components\TweenGameObject.cs" />
      <Compile Include="Assets\Scripts\DavidOchmann\Animation\DTween\DTween.cs" />
      <Compile Include="Assets\Scripts\DavidOchmann\Animation\DTween\Easing.cs" />
      <Compile Include="Assets\Scripts\DavidOchmann\Animation\DTween\Tween.cs" />
