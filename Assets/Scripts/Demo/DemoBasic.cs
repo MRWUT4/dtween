@@ -22,7 +22,7 @@ namespace Demo
 		private void dTweenOnUpdateHandler(Tween tween)
 		{
 			// Overwrite the localPosition property with every update.
-			transform.localPosition = (Vector3)tween.Target;
+			transform.localPosition = (Vector3)tween.target;
 		}
 
 

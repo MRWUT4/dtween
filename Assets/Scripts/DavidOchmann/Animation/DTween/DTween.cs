@@ -47,7 +47,7 @@ namespace DavidOchmann.Animation
 					tween.Update();
 					InvokeUpdate( tween );
 				
-					if( tween.GetComplete() )
+					if( tween.complete )
 						tweenList.RemoveAt( i );
 				}
 			}
@@ -77,7 +77,7 @@ namespace DavidOchmann.Animation
 					{
 					    Tween item = tweenList[ i ];
 					    
-					    if( item.Target == tween.Target )
+					    if( item.target == tween.target )
 					    {
 					    	tweenList[ i ] = tween;
 					    	return tween;
@@ -108,7 +108,12 @@ namespace DavidOchmann.Animation
 		/** Ease object to values. */
 		public Tween To(float duration)
 		{
-			return To( this, duration, ObjectToDictionary( new {} ), Linear.EaseNone );
+			return To( new {}, duration, ObjectToDictionary( new {} ), Linear.EaseNone );
+		}
+
+		public Tween To(float duration, object setup)
+		{
+			return To( new {}, duration, ObjectToDictionary( setup ), Linear.EaseNone );
 		}
 
 		public Tween To(object target, float duration, object setup)

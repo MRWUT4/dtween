@@ -16,9 +16,9 @@ namespace DavidOchmann.Animation
 		public static string[] IGNORED_PROPERTIES = { KEY_EASE, KEY_DELAY, KEY_GAMEOBJECT };
 		public static int FPS = (int)Math.Floor( 1 / Time.fixedDeltaTime );
 
-		public object Target;
-		public float Duration;
-		public Dictionary<string, object> Setup;
+		public object target;
+		public float duration;
+		public Dictionary<string, object> setup;
 		public bool hasCompleted;
 		public bool hasStarted;
 
@@ -30,9 +30,9 @@ namespace DavidOchmann.Animation
 
 		public Tween(object target, float duration, Dictionary<string, object> setup, EaseDelegate ease)
 		{
-			this.Target = target;
-			this.Duration = duration;
-			this.Setup = setup;
+			this.target = target;
+			this.duration = duration;
+			this.setup = setup;
 
 			this.frame = 0;
 			this.delay = setup.ContainsKey( KEY_DELAY ) ? Convert.ToSingle( setup[ KEY_DELAY ] ) : 0;
@@ -130,37 +130,38 @@ namespace DavidOchmann.Animation
 		 * Getter / Setter.
 		 */
 
-		public bool GetComplete()
+		public bool complete
 		{
-			return frame >= GetTotalFrames();
+			get { return frame >= totalFrames; }
 		}
 
-		public bool GetStart()
+		public bool start
 		{
-			return frame >= GetDelayFrames();
+			get { return frame >= delayFrames; }
 		}
 
-		public int GetTotalFrames()
+		public int totalFrames
 		{
-			return GetDurationFrames() + GetDelayFrames();
+			get { return durationFrames + delayFrames; }
 		}
 
-		public int GetDurationFrames()
+		public int durationFrames
 		{
-			return GetSecondsToFrames( Duration );
+			get { return GeSecondsToFrames( duration ); }
 		}
 
-		public int GetDelayFrames()
+		public int delayFrames
 		{
-			return GetSecondsToFrames( delay );
+			get { return GeSecondsToFrames( delay ); }
 		}
 
-		public float GetTimescale()
+		public float timescale
 		{
-			return Duration / GetDurationFrames();
+			get { return duration / durationFrames; }
 		}
 
-		public int GetSecondsToFrames(float seconds)
+		
+		public int GeSecondsToFrames(float seconds)
 		{
 			return (int)Math.Ceiling( FPS * seconds );
 		}
@@ -169,29 +170,29 @@ namespace DavidOchmann.Animation
 		{
 			Dictionary<string, float> dictionary = null;
 
-			if( GetStart() && beginValues != null )
+			if( start && beginValues != null )
 			{
 				dictionary = new Dictionary<string, float>();
 
-				for( int i = 0; i < Setup.Count; ++i )
+				for( int i = 0; i < setup.Count; ++i )
 				{
-					KeyValuePair<string, object> pair = Setup.ElementAt( i );
+					KeyValuePair<string, object> pair = setup.ElementAt( i );
 
 					string property = pair.Key;
 
 					if( !GetIsIgnoredProperty( property ) )
 					{
 						float value = Convert.ToSingle( pair.Value );
-						int durationFrame = frame - GetDelayFrames();
+						int durationFrame = frame - delayFrames;
 
 						dictionary[ property ] = float.NaN;
 
-						float t = durationFrame * GetTimescale();
+						float t = durationFrame * timescale;
 						float b = beginValues[ property ];
 						float c = value - b;
 
-						if( durationFrame < GetDurationFrames() - 1 )
-							dictionary[ property ] = this.ease( t, b, c, Duration );
+						if( durationFrame < durationFrames - 1 )
+							dictionary[ property ] = this.ease( t, b, c, duration );
 						else
 							dictionary[ property ] = value;
 					}
@@ -215,14 +216,15 @@ namespace DavidOchmann.Animation
 
 		public void Kill()
 		{
-			frame = this.GetTotalFrames() - 1;
+			frame = this.totalFrames - 1;
 			updateCurrentFrameProperties();
 		}
 
 		public void Update()
 		{
 			updateCurrentFrameProperties();
-			updateBeginValueInit();
+			updateFrame();
+			updateEventsAndBeginValues();
 		}
 
 
@@ -230,9 +232,9 @@ namespace DavidOchmann.Animation
 		 * Private interface.
 		 */
 
-		private void updateBeginValueInit()
+		private void updateEventsAndBeginValues()
 		{
-			if( GetStart() && beginValues == null )
+			if( start && beginValues == null )
 			{
 				initBeginValues();
 				InvokeStart();
@@ -241,7 +243,7 @@ namespace DavidOchmann.Animation
 			if( beginValues != null )
 				InvokeUpdate();
 
-			if( GetComplete() )
+			if( complete )
 				InvokeComplete();
 		}
 
@@ -249,14 +251,14 @@ namespace DavidOchmann.Animation
 		{
 			beginValues = new Dictionary<string, float>();
 
-			for( int i = 0; i < Setup.Count; ++i )
+			for( int i = 0; i < setup.Count; ++i )
 			{
-				KeyValuePair<string, object> pair = Setup.ElementAt( i );
+				KeyValuePair<string, object> pair = setup.ElementAt( i );
 				string name = pair.Key;
 
 				if( !GetIsIgnoredProperty( name ) )
 				{
-					object value = GetObjectValue( Target, name );
+					object value = GetObjectValue( target, name );
 					beginValues.Add( name, Convert.ToSingle( value ) );
 				}
 			}
@@ -271,11 +273,15 @@ namespace DavidOchmann.Animation
 				for( int i = 0; i < dictionary.Count; ++i )
 				{
 					KeyValuePair<string, float> pair = dictionary.ElementAt( i );
-					SetObjectValue( Target, pair.Key, pair.Value );
+					SetObjectValue( target, pair.Key, pair.Value );
 				}
 			}
+		}
 
-			frame++;
+		private void updateFrame()
+		{
+			frame = ( frame + 1 );// % totalFrames;
+			// Debug.Log( frame );
 		}
 	}
 }
