@@ -10,7 +10,7 @@ namespace DavidOchmann.Animation
 	{
 		public bool overwrite;
 		public bool isFactory;
-		private List<Tween> tweenList = new List<Tween>();
+		private List<Tween> tweens = new List<Tween>();
 		
 
 		public DTween(bool overwrite = false)
@@ -38,9 +38,9 @@ namespace DavidOchmann.Animation
 
 		public void Update()
 		{
-			for( int i = tweenList.Count - 1; i >= 0; --i )
+			for( int i = tweens.Count - 1; i >= 0; --i )
 			{
-				Tween tween = tweenList[ i ];
+				Tween tween = tweens[ i ];
 
 				if( tween != null )
 				{
@@ -48,7 +48,7 @@ namespace DavidOchmann.Animation
 					InvokeUpdate( tween );
 				
 					if( tween.complete )
-						tweenList.RemoveAt( i );
+						tweens.RemoveAt( i );
 				}
 			}
 		}
@@ -73,34 +73,59 @@ namespace DavidOchmann.Animation
 			{
 				if( overwrite || this.overwrite )
 				{
-					for( int i = 0; i < tweenList.Count; ++i )
+					for( int i = 0; i < tweens.Count; ++i )
 					{
-					    Tween item = tweenList[ i ];
+					    Tween item = tweens[ i ];
 					    
 					    if( item.target == tween.target )
 					    {
-					    	tweenList[ i ] = tween;
+					    	tweens[ i ] = tween;
 					    	return tween;
 					    }
 					}
 				}
 				
-				tweenList.Add( tween );
+				tweens.Add( tween );
 			}
 
 			return tween;
 		}
 
-		public void Kill(bool killTweens = true)
+		public void Remove(List<Tween> list, bool jumpToEnd)
 		{
-			for( int i = tweenList.Count - 1; i >= 0; --i )
+			for( int i = 0; i < list.Count; ++i )
 			{
-			    Tween tween = tweenList[ i ];
+			    Tween item = list[ i ];
+			 	Remove( item, jumpToEnd );   
+			}
+		}
+
+		public void Remove(Tween tween, bool jumpToEnd)
+		{
+			for( int i = tweens.Count - 1; i >= 0; --i )
+			{
+			    Tween item = tweens[ i ];
+			 	
+			    if( item == tween )
+			    {
+			    	if( jumpToEnd )
+			    		item.Kill();
+
+			    	tweens.RemoveAt( i );
+			    }
+			}
+		}
+
+		public void Kill(bool jumpToEnd = true)
+		{
+			for( int i = tweens.Count - 1; i >= 0; --i )
+			{
+			    Tween tween = tweens[ i ];
 			    
-			    if( killTweens )
+			    if( jumpToEnd )
 			 		tween.Kill();
 			 		
-			 	tweenList.RemoveAt( i );   
+			 	tweens.RemoveAt( i );   
 			}
 		}
 

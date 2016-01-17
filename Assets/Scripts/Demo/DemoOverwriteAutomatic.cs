@@ -4,9 +4,10 @@ using DavidOchmann.Animation;
 namespace Demo
 {
 	[ RequireComponent (typeof ( Mutate )) ]
-	public class DemoOverwrite : MonoBehaviour
+	public class DemoOverwriteAutomatic : MonoBehaviour
 	{
 		// Create private dTween instance. With overwrite set to true.
+		// Overwrites every tween with an identical target object.
 		private DTween dTween = new DTween( true );
 
 
@@ -33,8 +34,6 @@ namespace Demo
 
 		private void tweenTickCompleteHandler(Tween tween)
 		{
-			dTween.Kill( true );
-
 			// Loop tick animation.
 			startTickTween();
 

@@ -280,8 +280,7 @@ namespace DavidOchmann.Animation
 
 		private void updateFrame()
 		{
-			frame = ( frame + 1 );// % totalFrames;
-			// Debug.Log( frame );
+			frame++;
 		}
 	}
 }
