@@ -34,9 +34,9 @@ namespace Demo
 
 		private void tweenTickCompleteHandler(Tween tween)
 		{
-			// Remove mutate Tween if it has been 
-			if( mutateTween )
-				dTween.Remove( mutateTween, false );
+			// Removes tween when available.
+			// Set second parameter to true, to jump to the end of the animation.
+			dTween.Remove( mutateTween, false ); 
 
 			// Loop tick animation.
 			startTickTween();

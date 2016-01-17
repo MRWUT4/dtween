@@ -102,17 +102,20 @@ namespace DavidOchmann.Animation
 
 		public void Remove(Tween tween, bool jumpToEnd)
 		{
-			for( int i = tweens.Count - 1; i >= 0; --i )
+			if( tween != null )
 			{
-			    Tween item = tweens[ i ];
-			 	
-			    if( item == tween )
-			    {
-			    	if( jumpToEnd )
-			    		item.Kill();
+				for( int i = tweens.Count - 1; i >= 0; --i )
+				{
+				    Tween item = tweens[ i ];
+				 	
+				    if( item == tween )
+				    {
+				    	if( jumpToEnd )
+				    		item.Kill();
 
-			    	tweens.RemoveAt( i );
-			    }
+				    	tweens.RemoveAt( i );
+				    }
+				}
 			}
 		}
 
