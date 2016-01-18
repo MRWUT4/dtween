@@ -10,6 +10,7 @@ namespace DavidOchmann.Animation
 	{
 		private Vector3 localPosition;
 		private Vector3 localScale;
+		private Quaternion localRotation;
 
 
 		/**
@@ -26,13 +27,14 @@ namespace DavidOchmann.Animation
 		 * Getter / Setter.
 		 */
 
-		/** Transform properties. */
+		/** localPosition */
 		public float x
 		{
 			set 
 			{ 
 				localPosition.x = value;
 				localPosition.y = y;
+				localPosition.z = z;
 				gameObject.transform.localPosition = localPosition;
 			}
 			
@@ -46,8 +48,9 @@ namespace DavidOchmann.Animation
 		{
 			set 
 			{ 
-				localPosition.y = value;
 				localPosition.x = x;
+				localPosition.y = value;
+				localPosition.z = z;
 				gameObject.transform.localPosition = localPosition;
 			}
 			
@@ -57,12 +60,31 @@ namespace DavidOchmann.Animation
 			}
 		}
 
+		public float z
+		{
+			set 
+			{ 
+				localPosition.x = x;
+				localPosition.y = y;
+				localPosition.z = value;
+				gameObject.transform.localPosition = localPosition;
+			}
+			
+			get 
+			{ 
+				return gameObject.transform.localPosition.z; 
+			}
+		}
+
+
+		/** localScale */
 		public float scaleX
 		{
 			set 
 			{ 
 				localScale.x = value;
 				localScale.y = scaleY;
+				localScale.z = scaleZ;
 				gameObject.transform.localScale = localScale;
 			}
 			
@@ -76,8 +98,9 @@ namespace DavidOchmann.Animation
 		{
 			set 
 			{ 
-				localScale.y = value;
 				localScale.x = scaleX;
+				localScale.y = value;
+				localScale.z = scaleZ;
 				gameObject.transform.localScale = localScale;
 			}
 			
@@ -86,13 +109,63 @@ namespace DavidOchmann.Animation
 				return gameObject.transform.localScale.y; 
 			}
 		}
+
+		public float scaleZ
+		{
+			set 
+			{ 
+				localScale.x = scaleX;
+				localScale.y = scaleY;
+				localScale.z = value;
+				gameObject.transform.localScale = localScale;
+			}
+			
+			get 
+			{ 
+				return gameObject.transform.localScale.z; 
+			}
+		}
 		
+
+		/** localRotation */
+		public float rotationX
+		{
+			get 
+		    { 
+		        return localRotation.eulerAngles.x; 
+		    }
+		
+		    set
+		    { 	
+				Vector3 angles = ( transform.localRotation ).eulerAngles;
+				Quaternion quaternion = Quaternion.Euler( value, angles.y, angles.z );
+
+				transform.localRotation = quaternion;
+		    }
+		}
+
+		public float rotationY
+		{
+			get 
+		    { 
+		        return localRotation.eulerAngles.y;
+		    }
+		
+		    set
+		    { 	
+				Vector3 angles = ( transform.localRotation ).eulerAngles;
+				Quaternion quaternion = Quaternion.Euler( angles.x, value, angles.z );
+
+				transform.localRotation = quaternion;
+		    }
+		}
+
 		public float rotationZ
 		{
 			get 
 		    { 
 		    	Vector3 angles = ( transform.localRotation ).eulerAngles;
-		        return angles.z; 
+		        return localRotation.eulerAngles.y; 
 		    }
 		
 		    set
@@ -113,6 +186,7 @@ namespace DavidOchmann.Animation
 		{
 			localPosition = gameObject.transform.localPosition;
 			localScale = gameObject.transform.localScale;
+			localRotation = gameObject.transform.localRotation;
 		}
 	}
 }

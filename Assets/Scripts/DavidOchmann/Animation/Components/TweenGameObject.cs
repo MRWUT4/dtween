@@ -31,6 +31,8 @@ namespace DavidOchmann.Animation
 	[ RequireComponent( typeof( Mutate ) ) ]
 	public class TweenGameObject : MonoBehaviour
 	{
+		private static string EASING_NAMESPACE = "DavidOchmann.Animation.";
+
 		public string id;
 		public bool playOnStart = false;
 		public float duration = .6f;
@@ -70,7 +72,7 @@ namespace DavidOchmann.Animation
 			string typeName = Enum.GetName( typeof( EaseType ), easeType );
 			string methodName = Enum.GetName( typeof( EaseMethod ), easeMethod );
 
-			Type type = Type.GetType( typeName );
+			Type type = Type.GetType( EASING_NAMESPACE + typeName );
 			MethodInfo methodInfo = type.GetMethod( methodName, BindingFlags.Public | BindingFlags.Static );
 
 			Tween.EaseDelegate easeDelegate = (Tween.EaseDelegate)Delegate.CreateDelegate( typeof( Tween.EaseDelegate ), methodInfo );
