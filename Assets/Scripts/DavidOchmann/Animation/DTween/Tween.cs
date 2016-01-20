@@ -10,6 +10,7 @@ namespace DavidOchmann.Animation
 	{
 		public delegate float EaseDelegate(float t, float b, float c, float d);
 
+		public static string WARNING_MESSAGE_PROPERTY = "has no property \"";
 		public static string KEY_DELAY = "delay";
 		public static string KEY_EASE = "ease";
 		public static string KEY_GAMEOBJECT = "gameObject";
@@ -90,7 +91,9 @@ namespace DavidOchmann.Animation
 			else
 			{
 				FieldInfo fieldInfo = type.GetField( property );
-				value = fieldInfo.GetValue( target );
+
+				if( fieldInfo != null )
+					value = fieldInfo.GetValue( target );
 			}
 
 			return value;
@@ -108,7 +111,11 @@ namespace DavidOchmann.Animation
 			else
 			{
 				FieldInfo fieldInfo = type.GetField( property );
-				fieldInfo.SetValue( target, value );
+
+				if( fieldInfo != null )
+					fieldInfo.SetValue( target, value );
+				else
+					Debug.LogWarning( target + WARNING_MESSAGE_PROPERTY + property + "\".");
 			}
 
 			return target;

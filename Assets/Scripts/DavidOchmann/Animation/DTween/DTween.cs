@@ -10,7 +10,8 @@ namespace DavidOchmann.Animation
 	{
 		public bool overwrite;
 		public bool isFactory;
-		private List<Tween> tweens = new List<Tween>();
+		
+		public List<Tween> tweens = new List<Tween>();
 		
 
 		public DTween(bool overwrite = false)
@@ -46,7 +47,7 @@ namespace DavidOchmann.Animation
 				{
 					tween.Update();
 					InvokeUpdate( tween );
-				
+
 					if( tween.complete )
 						tweens.RemoveAt( i );
 				}

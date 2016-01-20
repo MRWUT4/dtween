@@ -164,7 +164,6 @@ namespace DavidOchmann.Animation
 		{
 			get 
 		    { 
-		    	Vector3 angles = ( transform.localRotation ).eulerAngles;
 		        return localRotation.eulerAngles.y; 
 		    }
 		

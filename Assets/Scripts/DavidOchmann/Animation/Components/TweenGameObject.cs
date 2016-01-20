@@ -28,10 +28,18 @@ namespace DavidOchmann.Animation
 	}
 
 
+	[ System.Serializable ]
+	public class TweenGameObjectOverwrite
+	{
+		public bool overwrite = true;
+		public bool jumpToEnd = false;
+	}
+
+
 	[ RequireComponent( typeof( Mutate ) ) ]
 	public class TweenGameObject : MonoBehaviour
 	{
-		private static string EASING_NAMESPACE = "DavidOchmann.Animation.";
+        private static string EASING_NAMESPACE = "DavidOchmann.Animation.";
 
 		public string id;
 		public bool playOnStart = false;
@@ -39,11 +47,11 @@ namespace DavidOchmann.Animation
 		public TweenMethod direction;
 		public EaseType easeType;
 		public EaseMethod easeMethod;
-
+		public TweenGameObjectOverwrite overwrite;
 		public TweenAttributeVO[] attributes;
 		public TweenGameObjectEvents events;
 
-		private DTween dTween;
+		public DTween dTween;
 		private Mutate mutate;
 		private Dictionary<string, object> dictionary;
 
@@ -66,6 +74,11 @@ namespace DavidOchmann.Animation
 			dTween.Update();
 		}
 
+		public void OnValidate()
+		{
+			Start();
+		}
+
 
 		public Tween.EaseDelegate GetDelegateFromSetup()
 		{
@@ -82,6 +95,8 @@ namespace DavidOchmann.Animation
 
 		public void Play(string id = null)
 		{
+			Kill();
+
 			if( id != null)
 			{
 				TweenGameObject[] tweenGameObjects = GetComponents<TweenGameObject>();
@@ -90,7 +105,7 @@ namespace DavidOchmann.Animation
 				{
 				    TweenGameObject tweenGameObject = tweenGameObjects[ i ];
 
-				    if( this.id == id )
+				    if( tweenGameObject.id == id )
 				 		tweenGameObject.Play();   
 				}
 			}
@@ -107,6 +122,28 @@ namespace DavidOchmann.Animation
 			    TweenGameObject tweenGameObject = tweenGameObjects[ i ];
 			 	tweenGameObject.Play();   
 			}
+		}
+
+		public void Stop()
+		{
+			dTween.Kill();
+		}
+
+		public void StopAll()
+		{
+			TweenGameObject[] tweenGameObjects = GetComponents<TweenGameObject>();
+
+			for( int i = 0; i < tweenGameObjects.Length; ++i )
+			{
+			    TweenGameObject tweenGameObject = tweenGameObjects[ i ];
+			 	tweenGameObject.dTween.Kill();   
+			}
+		}
+
+		private void Kill(bool jumpToEnd = false)
+		{
+			if( overwrite.overwrite )
+				dTween.Kill( overwrite.jumpToEnd );	
 		}
 
 

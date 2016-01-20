@@ -19,8 +19,13 @@ namespace Demo
 		/** Tween to destintation position. */
 		private void tweenToDestination()
 		{
+			// Tween Mutate.x to 200 and Mutate.rotation to 180.
 			Tween tween = dTween.To( GetComponent<Mutate>(), 1, new { x = 200, rotationZ = 180 }, Quad.EaseInOut );
+
+			// Call desinationTweenOnStartHandler at the start of the Tween.
 			tween.OnStart += desinationTweenOnStartHandler;
+
+			// Call desinationTweenOnCompleteHandler at the end of the Tween.
 			tween.OnComplete += desinationTweenOnCompleteHandler;
 		}
 
@@ -31,6 +36,7 @@ namespace Demo
 
 		private void desinationTweenOnCompleteHandler(Tween tween)
 		{
+			// Start tween to start position ( x = -200 ).
 			tweenToStart();
 		}
 
@@ -38,12 +44,16 @@ namespace Demo
 		/** Tween to start position. */
 		private void tweenToStart()
 		{
+			// Tween Mutate.x to -200 and Mutate.rotation to 180.
 			Tween tween = dTween.To( GetComponent<Mutate>(), 1, new { x = -200, rotationZ = 0 }, Quad.EaseInOut );
+			
+			// Call startTweenOnCompleteHandler at the end of the Tween.
 			tween.OnComplete += startTweenOnCompleteHandler;
 		}
 
 		private void startTweenOnCompleteHandler(Tween tween)
 		{
+			// Start tween to destination position ( x = 200 ).
 			tweenToDestination();
 		}
 
