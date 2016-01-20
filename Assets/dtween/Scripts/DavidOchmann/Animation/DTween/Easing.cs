@@ -1,3 +1,16 @@
+/**
+ * PennerDoubleAnimation
+ * Animates the value of a double property between two target values using 
+ * Robert Penner's easing equations for interpolation over a specified Duration.
+ *
+ * @author		David Ochmann
+ * @version		1.0
+ *
+ * Credit/Thanks:
+ * Robert Penner
+ *   (http://robertpenner.com/easing/) [See License.txt for license info]
+ */
+
 using System;
 using UnityEngine;
 
