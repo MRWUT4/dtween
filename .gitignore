@@ -1,5 +1,6 @@
-# Unity generated
-
+# =============== #
+# Unity generated #
+# =============== #
 *.sln
 *.apk
 .apk
@@ -12,9 +13,9 @@ Library/metadata/
 Assets/AssetStoreTools*
 !Assets/
 
-
-# Visual Studio / MonoDevelop generated
-
+# ===================================== #
+# Visual Studio / MonoDevelop generated #
+# ===================================== #
 ExportedObj/
 *.svd
 *.userprefs
@@ -26,9 +27,9 @@ ExportedObj/
 *.booproj 
 
  
-
-# OS generated
-
+# ============ #
+# OS generated #
+# ============ #
 .DS_Store
 .DS_Store?
 ._*
