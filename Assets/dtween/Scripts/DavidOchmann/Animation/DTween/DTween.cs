@@ -193,7 +193,10 @@ namespace DavidOchmann.Animation
 					dictionaryEnd.Add( name, pair.Value );
 			}
 
-			Tween tweenStart = new Tween( target, 0, setup, ease );
+			Dictionary<string, object> dictionaryStart = new Dictionary<string, object>( setup );
+			dictionaryStart.Remove( Tween.KEY_DELAY );
+
+			Tween tweenStart = To( target, 0, dictionaryStart, ease );
 			tweenStart.Update();
 
 			Tween tween = To( target, duration, dictionaryEnd, ease );

@@ -12,9 +12,8 @@ namespace DavidOchmann.Animation
 
 		public static string WARNING_MESSAGE_PROPERTY = "has no property \"";
 		public static string KEY_DELAY = "delay";
-		public static string KEY_EASE = "ease";
-		public static string KEY_GAMEOBJECT = "gameObject";
-		public static string[] IGNORED_PROPERTIES = { KEY_EASE, KEY_DELAY, KEY_GAMEOBJECT };
+		public static string KEY_PARAMETER = "parameter";
+		public static string[] IGNORED_PROPERTIES = { KEY_DELAY, KEY_PARAMETER };
 		public static int FPS = (int)Math.Floor( 1 / Time.fixedDeltaTime );
 
 		public object target;

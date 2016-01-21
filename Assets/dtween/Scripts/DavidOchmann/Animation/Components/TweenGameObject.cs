@@ -74,11 +74,6 @@ namespace DavidOchmann.Animation
 			dTween.Update();
 		}
 
-		public void OnValidate()
-		{
-			Start();
-		}
-
 
 		public Tween.EaseDelegate GetDelegateFromSetup()
 		{

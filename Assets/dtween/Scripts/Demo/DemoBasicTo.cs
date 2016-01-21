@@ -3,7 +3,7 @@ using DavidOchmann.Animation;
     	
 namespace Demo
 {
-	public class DemoBasic : MonoBehaviour
+	public class DemoBasicTo : MonoBehaviour
 	{
 		// Create private dTween instance.
 		private DTween dTween = new DTween();
