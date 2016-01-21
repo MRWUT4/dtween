@@ -40,7 +40,6 @@ namespace DavidOchmann.Animation
 			this.ease = ease != null ? ease : Quad.EaseOut;
 			
 			Reset();
-			Update();
 		}
 
 
@@ -137,6 +136,11 @@ namespace DavidOchmann.Animation
 		 * Getter / Setter.
 		 */
 
+		public bool isFirstFrame
+		{
+			get { return frame == 0; }
+		}
+
 		public bool complete
 		{
 			get { return frame >= totalFrames; }
@@ -166,7 +170,6 @@ namespace DavidOchmann.Animation
 		{
 			get { return duration / durationFrames; }
 		}
-
 		
 		public int GeSecondsToFrames(float seconds)
 		{
@@ -229,9 +232,9 @@ namespace DavidOchmann.Animation
 
 		public void Update()
 		{
-			updateCurrentFrameProperties();
 			updateFrame();
 			updateEventsAndBeginValues();
+			updateCurrentFrameProperties();
 		}
 
 
