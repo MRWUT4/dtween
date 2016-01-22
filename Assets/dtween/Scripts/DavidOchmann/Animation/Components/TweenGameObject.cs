@@ -66,7 +66,10 @@ namespace DavidOchmann.Animation
 			initDictionary();
 
 			if( playOnStart )
+			{
 				Play();
+				FixedUpdate();
+			}
 		}
 
 		public void FixedUpdate()
