@@ -132,7 +132,7 @@ namespace DavidOchmann.Animation
 		{
 			get 
 		    { 
-		        return localRotation.eulerAngles.x; 
+		        return ( transform.localRotation ).eulerAngles.x; 
 		    }
 		
 		    set
@@ -148,7 +148,7 @@ namespace DavidOchmann.Animation
 		{
 			get 
 		    { 
-		        return localRotation.eulerAngles.y;
+		        return ( transform.localRotation ).eulerAngles.y;
 		    }
 		
 		    set
@@ -164,7 +164,7 @@ namespace DavidOchmann.Animation
 		{
 			get 
 		    { 
-		        return localRotation.eulerAngles.y; 
+		        return ( transform.localRotation ).eulerAngles.z; 
 		    }
 		
 		    set
@@ -185,7 +185,7 @@ namespace DavidOchmann.Animation
 		{
 			localPosition = gameObject.transform.localPosition;
 			localScale = gameObject.transform.localScale;
-			localRotation = gameObject.transform.localRotation;
+			// localRotation = gameObject.transform.localRotation;
 		}
 	}
 }
