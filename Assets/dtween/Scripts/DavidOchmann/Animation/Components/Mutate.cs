@@ -10,7 +10,7 @@ namespace DavidOchmann.Animation
 	{
 		private Vector3 localPosition;
 		private Vector3 localScale;
-		private Quaternion localRotation;
+		// private Quaternion localRotation;
 
 
 		/**
