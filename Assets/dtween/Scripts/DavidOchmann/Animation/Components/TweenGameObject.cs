@@ -60,9 +60,13 @@ namespace DavidOchmann.Animation
 		 * Public interface.
 		 */
 
-		public void Start()
+		public void Awake()
 		{
 			initVariables();
+		}
+
+		public void Start()
+		{
 			initDictionary();
 
 			if( playOnStart )
@@ -140,7 +144,7 @@ namespace DavidOchmann.Animation
 
 		private void Kill(bool jumpToEnd = false)
 		{
-			if( overwrite.overwrite )
+			if( dTween != null && overwrite.overwrite )
 				dTween.Kill( overwrite.jumpToEnd );	
 		}
 
