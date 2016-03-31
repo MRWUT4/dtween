@@ -63,12 +63,11 @@ namespace DavidOchmann.Animation
 		public void Awake()
 		{
 			initVariables();
+			initDictionary();
 		}
 
 		public void Start()
 		{
-			initDictionary();
-
 			if( playOnStart )
 			{
 				Play();
