@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEditor;
 using UnityEngine;
+using DavidOchmann.Animation;
 
 namespace DavidOchmann.CustomEditorTools
 {
@@ -13,6 +14,7 @@ namespace DavidOchmann.CustomEditorTools
 	{
 		void Update();
 	}
+
 
 
 	/**
@@ -49,21 +51,30 @@ namespace DavidOchmann.CustomEditorTools
 	}
 
 
+
 	/**
 	 * EditorPopup
 	 */
 
 	public class EditorPopup : IUpdate
 	{
-		public string name;
-		public int index;
-		public List<string> list;
+		public PopupVO popupVO;
+		public GUILayoutOption[] guiLayoutOptions;
 
 
-		public EditorPopup(string name, List<string> list)
+		public EditorPopup(PopupVO popupVO, GUILayoutOption[] guiLayoutOptions = null)
 		{
-			this.name = name;
-			this.list = list;
+			this.popupVO = popupVO;
+			this.guiLayoutOptions = guiLayoutOptions;
+		}
+
+
+		public event OnChangeEventHandler OnChange;
+		public delegate void OnChangeEventHandler( EditorPopup editorPopup );
+		
+		protected virtual void InvokeChange() 
+		{
+			if( OnChange != null ) OnChange( this );
 		}
 
 
@@ -71,11 +82,19 @@ namespace DavidOchmann.CustomEditorTools
 		 * Getter / Setter
 		 */
 		
+		public int index
+		{
+			get 
+		    { 
+		        return popupVO.index; 
+		    }
+		}
+
 		public string value
 		{
 			get 
 		    { 
-		        return list[ index ]; 
+		        return popupVO.list[ popupVO.index ]; 
 		    }
 		}
 
@@ -86,7 +105,112 @@ namespace DavidOchmann.CustomEditorTools
 
 		public void Update()
 		{
-			index = EditorGUILayout.Popup( name, index, list.ToArray() );
+			int value = EditorGUILayout.Popup( popupVO.name, popupVO.index, popupVO.list.ToArray(), guiLayoutOptions );
+
+			if( value != popupVO.index )
+			{
+				popupVO.index = value;
+				InvokeChange();
+			}
+		}
+	}
+
+
+
+	/**
+	 * PopupFloatField
+	 */
+
+	public class PopupFloatField : IUpdate
+	{
+		public PopupFloatFieldVO popupFloatFieldVO;
+		// public List<string> list;
+		// public float value;
+		public EditorPopup editorPopup;
+		public EditorButton editorButton;
+
+
+		public PopupFloatField(PopupFloatFieldVO popupFloatFieldVO)
+		{
+			this.popupFloatFieldVO = popupFloatFieldVO;
+			// this.list = list;
+			// this.value = value;
+
+			init();
+		}
+
+
+		/**
+		 * Events
+		 */
+
+		public event OnCloseEventHandler OnClose;
+		public delegate void OnCloseEventHandler( PopupFloatField popupFloatField );
+		
+		protected virtual void InvokeClose() 
+		{
+			if( OnClose != null ) OnClose( this );
+		}
+
+
+		/**
+		 * Public
+		 */
+
+		public void Update()
+		{
+			EditorGUILayout.BeginHorizontal();
+
+			editorPopup.Update();
+			updateFloatField();
+			editorButton.Update();
+
+			EditorGUILayout.EndHorizontal();
+		}
+
+
+		/**
+		 * Private
+		 */
+
+		private void init()
+		{
+			initEditorPopup();
+			initEditorButton();
+		}
+
+		private void initEditorPopup()
+		{
+			GUILayoutOption[] guiLayoutOptions = 
+			{
+				GUILayout.MinWidth( 100 )
+			};
+
+			PopupVO popupVO = new PopupVO();
+
+			popupVO.name = "";
+			popupVO.index = 0; 
+			popupVO.list = popupFloatFieldVO.list;
+
+			editorPopup = new EditorPopup( popupVO, guiLayoutOptions );
+		}
+
+		private void initEditorButton()
+		{
+			editorButton = new EditorButton( "x" );
+			editorButton.OnClick += editorButtonOnClickHandler;
+		}
+
+		private void editorButtonOnClickHandler(EditorButton editorButton)
+		{
+			InvokeClose();
+		}
+
+
+		private void updateFloatField()
+		{
+			EditorGUILayout.LabelField( "value:", GUILayout.Width( 34 ) );
+			popupFloatFieldVO.value = EditorGUILayout.FloatField( popupFloatFieldVO.value );
 		}
 	}
 }
