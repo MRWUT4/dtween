@@ -15,12 +15,12 @@ namespace DavidOchmann.Animation
 	{
 		private TweenComponentValues tweenComponentValues;
 
-		// private List<IUpdate> updateList;
-		private EditorPopup editorPopupComponents;
+		private List<IUpdate> updateList;
+		private EditorPopup editorPopupComponent;
 		private EditorButton editorButtonAddProperty;
 		private MonoBehaviour[] monoBehaviours;
-		private bool showUpdateList = true;
-		
+		private bool showUpdateList;
+
 
 		/**
 		 * Editor interface
@@ -37,11 +37,11 @@ namespace DavidOchmann.Animation
 		{
 			EditorGUILayout.Space();
 
-			editorPopupComponents.Update();
+			editorPopupComponent.Update();
 
 			EditorGUILayout.Space();
 			
-			updateUpdateList();
+			updatePopupFloatFields();
 			editorButtonAddProperty.Update();
 		}
 
@@ -55,7 +55,6 @@ namespace DavidOchmann.Animation
 		{
 			// updateList = new List<IUpdate>();
 			tweenComponentValues = ( TweenComponentValues )target;
-
 
 			/*
 			PopupFloatFieldVO popupFloatFieldVO	= tweenComponentValues.popupFloatFieldVO;
@@ -95,14 +94,14 @@ namespace DavidOchmann.Animation
 		    popupVO.name = "Component";
 		    popupVO.list = list;
 
-		    editorPopupComponents = new EditorPopup( popupVO );
-		    // editorPopupComponents.OnChange += editorPopupComponentsOnChangeHandler;
+		    editorPopupComponent = new EditorPopup( popupVO );
+		    editorPopupComponent.OnChange += editorPopupComponentOnChangeHandler;
 		}
 
-		// private void editorPopupComponentsOnChangeHandler(EditorPopup editorPopup)
-		// {
-			// updateList.Clear();
-		// }
+		private void editorPopupComponentOnChangeHandler(EditorPopup editorPopup)
+		{
+			tweenComponentValues.popupFloatFieldVOs.Clear();
+		}
 
 
 		private void addNumbersToDuplicateString(List<string> list)
@@ -151,36 +150,6 @@ namespace DavidOchmann.Animation
 		}
 
 
-		/** Updated Elements in updateList. */
-		private void updateUpdateList()
-		{
-			Debug.Log( "updateUpdateList" );
-
-			List<PopupFloatFieldVO> list = tweenComponentValues.popupFloatFieldVOs;
-
-			for( int i = 0; i < list.Count; ++i )
-			{
-			    PopupFloatFieldVO popupFloatFieldVO = list[ i ];
-
-			    PopupFloatField popupFloatField = new PopupFloatField( popupFloatFieldVO );
-			    popupFloatField.Update();
-
-			    // updateList.Add( popupFloatField );
-			}
-
-			// showUpdateList = EditorGUILayout.Foldout( showUpdateList, "Properties" );
-
-			// if( showUpdateList )
-			// {
-			// 	for( int i = 0; i < updateList.Count; ++i )
-			// 	{
-			// 	    IUpdate iUpdate = updateList[ i ];
-			// 	    iUpdate.Update();
-			// 	}
-			// }
-		}
-
-
 		/** Button that adds a new selection for the Component float properties. */
 		private void initAddPropertyButton()
 		{
@@ -191,16 +160,14 @@ namespace DavidOchmann.Animation
 		private void editorButtonAddPropertyOnClickHandler(EditorButton editorButton)
 		{
 			showUpdateList = true;
-
 			createPropertyPopup();
-			// parsePopupFloatFieldVOList();
 		}
 
 
 		/** PopupCloseField list */
 		private void createPropertyPopup()
 		{
-			MonoBehaviour monoBehaviour = monoBehaviours[ editorPopupComponents.index ];
+			MonoBehaviour monoBehaviour = monoBehaviours[ editorPopupComponent.index ];
 			
 			List<string> list = new List<string>();
 
@@ -208,53 +175,12 @@ namespace DavidOchmann.Animation
 			list = list.Concat( parseComponentFieldsOf( monoBehaviour ) ).ToList();
 
 			
-
-			Debug.Log( tweenComponentValues.popupFloatFieldVOs.Count );
-
 			PopupFloatFieldVO popupFloatFieldVO = new PopupFloatFieldVO();
 			popupFloatFieldVO.list = list;
 
 			tweenComponentValues.popupFloatFieldVOs.Add( popupFloatFieldVO );
 		}
 
-
-
-
-		private void parsePopupFloatFieldVOList()
-		{
-			// List<PopupFloatFieldVO> list = tweenComponentValues.popupFloatFieldVOs;
-
-			// for( int i = 0; i < list.Count; ++i )
-			// {
-			//     PopupFloatFieldVO popupFloatFieldVO = list[ i ];
-
-			//     PopupFloatField popupFloatField = new PopupFloatField( popupFloatFieldVO );
-			//     popupFloatField.Update();
-
-			//     // updateList.Add( popupFloatField );
-			// }
-		}
-
-
-		private void popupFloatFieldOnCloseHandler(PopupFloatField popupFloatField)
-		{
-			removePopupFloatFieldFromUpdateList( popupFloatField );
-		}
-
-
-		/** Helper functions */
-		private void removePopupFloatFieldFromUpdateList(PopupFloatField popupFloatField)
-		{
-			// List<PopupFloatFieldVO> list = tweenComponentValues.popupFloatFieldVOs;
-
-			// for( int i = list.Count - 1; i >= 0; --i )
-			// {
-			//     PopupFloatField iUpdate = list[ i ];
-			 	
-			//     if( popupFloatField == iUpdate )
-			//     	list.RemoveAt( i );
-			// }
-		}
 
 		private List<string> parseComponentPropertiesOf(MonoBehaviour monoBehaviour)
 		{
@@ -304,6 +230,46 @@ namespace DavidOchmann.Animation
 			}
 
 			return list;
+		}
+
+
+		/** Generate and update PopupFloatFields. */
+		private void updatePopupFloatFields()
+		{
+			showUpdateList = EditorGUILayout.Foldout( showUpdateList, "Properties" );
+
+			if( showUpdateList )
+			{
+				List<PopupFloatFieldVO> list = tweenComponentValues.popupFloatFieldVOs;
+
+				for( int i = 0; i < list.Count; ++i )
+				{
+				    PopupFloatFieldVO popupFloatFieldVO = list[ i ];
+
+				    PopupFloatField popupFloatField = new PopupFloatField( popupFloatFieldVO );
+				    popupFloatField.OnClose += popupFloatFieldOnCloseHandler;
+				    popupFloatField.Update();
+				}
+			}
+		}
+
+		private void popupFloatFieldOnCloseHandler(PopupFloatField popupFloatField)
+		{
+			removePopupFloatFieldVOFromList( popupFloatField.popupFloatFieldVO );
+		}
+
+		
+		private void removePopupFloatFieldVOFromList(PopupFloatFieldVO popupFloatFieldVO)
+		{
+			List<PopupFloatFieldVO> list = tweenComponentValues.popupFloatFieldVOs;
+
+			for( int i = list.Count - 1; i >= 0; --i )
+			{
+			    PopupFloatFieldVO item = list[ i ];
+			    
+			    if( item == popupFloatFieldVO )
+			    	list.RemoveAt( i );
+			}
 		}
 	}
 }

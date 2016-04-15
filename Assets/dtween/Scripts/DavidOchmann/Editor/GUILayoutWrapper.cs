@@ -179,6 +179,8 @@ namespace DavidOchmann.CustomEditorTools
 			initEditorButton();
 		}
 
+
+		/** EditorPopup instance. */
 		private void initEditorPopup()
 		{
 			GUILayoutOption[] guiLayoutOptions = 
@@ -189,12 +191,28 @@ namespace DavidOchmann.CustomEditorTools
 			PopupVO popupVO = new PopupVO();
 
 			popupVO.name = "";
-			popupVO.index = 0; 
+			popupVO.index = popupFloatFieldVO.index; 
 			popupVO.list = popupFloatFieldVO.list;
 
 			editorPopup = new EditorPopup( popupVO, guiLayoutOptions );
+			editorPopup.OnChange += editorPopupOnChangeHandler;
 		}
 
+		private void editorPopupOnChangeHandler(EditorPopup editorPopup)
+		{
+			popupFloatFieldVO.index = editorPopup.index;
+		}
+
+
+		/** Label and FloatField. */
+		private void updateFloatField()
+		{
+			EditorGUILayout.LabelField( "value:", GUILayout.Width( 34 ) );
+			popupFloatFieldVO.value = EditorGUILayout.FloatField( popupFloatFieldVO.value );
+		}
+
+
+		/** EditorButtonInstance. */
 		private void initEditorButton()
 		{
 			editorButton = new EditorButton( "x" );
@@ -204,13 +222,6 @@ namespace DavidOchmann.CustomEditorTools
 		private void editorButtonOnClickHandler(EditorButton editorButton)
 		{
 			InvokeClose();
-		}
-
-
-		private void updateFloatField()
-		{
-			EditorGUILayout.LabelField( "value:", GUILayout.Width( 34 ) );
-			popupFloatFieldVO.value = EditorGUILayout.FloatField( popupFloatFieldVO.value );
 		}
 	}
 }
