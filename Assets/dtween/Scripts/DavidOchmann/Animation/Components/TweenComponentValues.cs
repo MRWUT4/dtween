@@ -55,18 +55,18 @@ namespace DavidOchmann.Animation
 	[ RequireComponent( typeof( Mutate ) ) ]
 	public class TweenComponentValues : MonoBehaviour
 	{
-		// public PopupFloatFieldVO popupFloatFieldVO;
-
 		public PopupVO popupComponentVO;
 		public List<PopupFloatFieldVO> popupFloatFieldVOs;
+		// public PopupFloatFieldVO popupFloatFieldVO;
   //       private static string EASING_NAMESPACE = "DavidOchmann.Animation.";
 
-		// public string id;
-		// public bool playOnStart = false;
-		// public float duration = .6f;
-		// public TweenMethod direction;
-		// public EaseType easeType;
-		// public EaseMethod easeMethod;
+		public string id;
+		public bool playOnStart = false;
+		public float duration = .6f;
+		
+		public TweenMethod direction;
+		public EaseType easeType;
+		public EaseMethod easeMethod;
 		// public TweenComponentValuesOverwrite overwrite;
 		// public TweenPropertyVO[] attributes;
 		// public TweenComponentValuesEvents events;

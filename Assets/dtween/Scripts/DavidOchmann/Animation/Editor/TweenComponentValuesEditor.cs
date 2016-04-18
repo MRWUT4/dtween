@@ -19,7 +19,7 @@ namespace DavidOchmann.Animation
 		private EditorPopup editorPopupComponent;
 		private EditorButton editorButtonAddProperty;
 		private MonoBehaviour[] monoBehaviours;
-		private bool showUpdateList;
+		private bool showUpdateList = true;
 
 
 		/**
@@ -38,10 +38,19 @@ namespace DavidOchmann.Animation
 			EditorGUILayout.Space();
 
 			editorPopupComponent.Update();
+			
+			EditorGUILayout.Space();
+
+			updateIDField();
+			updateDuration();
+			updatePlayOnStart();
 
 			EditorGUILayout.Space();
 			
 			updatePopupFloatFields();
+
+			EditorGUILayout.Space();
+			
 			editorButtonAddProperty.Update();
 		}
 
@@ -63,6 +72,22 @@ namespace DavidOchmann.Animation
 			PopupFloatField popupFloatField = new PopupFloatField( popupFloatFieldVO );
 			updateList.Add( popupFloatField );
 			//*/
+		}
+
+
+		private void updateIDField()
+		{
+			tweenComponentValues.id = EditorGUILayout.TextField( "ID", tweenComponentValues.id );
+		}
+
+		private void updatePlayOnStart()
+		{
+			tweenComponentValues.playOnStart = EditorGUILayout.Toggle( "Play On Start", tweenComponentValues.playOnStart );
+		}
+
+		private void updateDuration()
+		{
+			tweenComponentValues.duration = EditorGUILayout.FloatField( "Duration", tweenComponentValues.duration );
 		}
 
 
@@ -219,8 +244,6 @@ namespace DavidOchmann.Animation
 
 				if( fieldInfo != null )
 				{
-					Debug.Log( fieldInfo );
-
 					Type fieldType = fieldInfo.FieldType;
 					bool isFloat = fieldType == typeof( float );
 					
