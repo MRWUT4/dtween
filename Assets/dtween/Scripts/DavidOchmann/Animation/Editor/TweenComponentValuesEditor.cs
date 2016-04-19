@@ -19,7 +19,12 @@ namespace DavidOchmann.Animation
 		private EditorPopup editorPopupComponent;
 		private EditorButton editorButtonAddProperty;
 		private MonoBehaviour[] monoBehaviours;
+		private bool showSetupList = true;
+		private bool showEasingList = true;
 		private bool showUpdateList = true;
+		private EditorPopup tweenMethodPopup;
+		private EditorPopup easeTypePopup;
+		private EditorPopup easeMethodPopup;
 
 
 		/**
@@ -29,6 +34,9 @@ namespace DavidOchmann.Animation
 		public void OnEnable()
 		{
 		    initVariables();
+		    initTweenMethod();
+		    initEaseType();
+		    initEaseMethod();
 			initEditorPopupComponents();
 			initAddPropertyButton();
 		}
@@ -36,21 +44,13 @@ namespace DavidOchmann.Animation
 		public override void OnInspectorGUI()
 		{
 			EditorGUILayout.Space();
-
 			editorPopupComponent.Update();
-			
-			EditorGUILayout.Space();
-
-			updateIDField();
-			updateDuration();
-			updatePlayOnStart();
-
-			EditorGUILayout.Space();
-			
+			updateSetupFields();
+			// EditorGUILayout.Space();
+			updateEasingPopups();
+			// EditorGUILayout.Space();
 			updatePopupFloatFields();
-
-			EditorGUILayout.Space();
-			
+			// EditorGUILayout.Space();
 			editorButtonAddProperty.Update();
 		}
 
@@ -75,6 +75,7 @@ namespace DavidOchmann.Animation
 		}
 
 
+		/** Setup Field functions. */
 		private void updateIDField()
 		{
 			tweenComponentValues.id = EditorGUILayout.TextField( "ID", tweenComponentValues.id );
@@ -88,6 +89,59 @@ namespace DavidOchmann.Animation
 		private void updateDuration()
 		{
 			tweenComponentValues.duration = EditorGUILayout.FloatField( "Duration", tweenComponentValues.duration );
+		}
+
+		private void updateSetupFields()
+		{
+			showSetupList = EditorGUILayout.Foldout( showSetupList, "Setup" );
+
+			if( showSetupList )
+			{
+				updateIDField();
+				updatePlayOnStart();
+				updateDuration();
+			}
+		}
+
+
+		/** Tween method functions. */
+		private void initTweenMethod()
+		{
+			PopupVO popupVO = tweenComponentValues.tweenMethod;
+			popupVO.name = "Tween Method";
+			popupVO.list = new List<string>{ "To", "From" };
+
+			tweenMethodPopup = new EditorPopup( popupVO );
+		}
+
+		private void initEaseType()
+		{
+			PopupVO popupVO = tweenComponentValues.easeType;
+			popupVO.name = "Ease Type";
+			popupVO.list = new List<string>{ "Back", "Bounce", "Circ", "Cubic", "Elastic", "Expo", "Linear", "Quad", "Quart", "Quint", "Sine" };
+
+			easeTypePopup = new EditorPopup( popupVO );
+		}
+
+		private void initEaseMethod()
+		{
+			PopupVO popupVO = tweenComponentValues.easeMethod;
+			popupVO.name = "Ease Method";
+			popupVO.list = new List<string>{ "EaseIn", "EaseOut", "EaseInOut" };
+
+			easeMethodPopup = new EditorPopup( popupVO );
+		}
+
+		private void updateEasingPopups()
+		{
+			showEasingList = EditorGUILayout.Foldout( showEasingList, "Easing" );
+
+			if( showEasingList )
+			{
+				tweenMethodPopup.Update();
+				easeTypePopup.Update();
+				easeMethodPopup.Update();
+			}
 		}
 
 

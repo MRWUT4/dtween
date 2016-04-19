@@ -61,12 +61,13 @@ namespace DavidOchmann.Animation
   //       private static string EASING_NAMESPACE = "DavidOchmann.Animation.";
 
 		public string id;
-		public bool playOnStart = false;
+		public bool playOnStart = true;
 		public float duration = .6f;
 		
-		public TweenMethod direction;
-		public EaseType easeType;
-		public EaseMethod easeMethod;
+		public PopupVO tweenMethod;
+		public PopupVO easeType;
+		public PopupVO easeMethod;
+
 		// public TweenComponentValuesOverwrite overwrite;
 		// public TweenPropertyVO[] attributes;
 		// public TweenComponentValuesEvents events;
