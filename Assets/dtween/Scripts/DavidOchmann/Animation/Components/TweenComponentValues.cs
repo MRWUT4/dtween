@@ -6,33 +6,9 @@ using System.Reflection;
 
 namespace DavidOchmann.Animation
 {
-	// public enum TweenMethod{ To, From };
-	// public enum EaseType{ Back, Bounce, Circ, Cubic, Elastic, Expo, Linear, Quad, Quart, Quint, Sine };
-	// public enum EaseMethod{ EaseIn, EaseOut, EaseInOut };
+    [ System.Serializable ]
+    public class TweenComponentValuesEvent : UnityEvent {}
 
-
-	// public class TweenPropertyVO
-	// {
-	// 	public string name;
-	// 	public float value;
-	// }
-	
-
-	// [ System.Serializable ]
-	// public class TweenComponentValuesEvents
-	// {
-	// 	public UnityEvent onStart;
-	// 	public UnityEvent onUpdate;
-	// 	public UnityEvent onComplete;
-	// }
-
-
-	// [ System.Serializable ]
-	// public class TweenComponentValuesOverwrite
-	// {
-	// 	public bool overwrite = true;
-	// 	public bool jumpToEnd = false;
-	// }
 
 	[ System.Serializable ]
 	public class PopupVO
@@ -57,26 +33,26 @@ namespace DavidOchmann.Animation
 	{
 		public PopupVO popupComponentVO;
 		public List<PopupFloatFieldVO> popupFloatFieldVOs;
-		// public PopupFloatFieldVO popupFloatFieldVO;
-  //       private static string EASING_NAMESPACE = "DavidOchmann.Animation.";
 
-		public string id;
+		public string id = "easeIn";
 		public bool playOnStart = true;
+		public bool allowOverwrite = true;
+		public bool jumpToEnd = false;
 		public float duration = .6f;
 		
 		public PopupVO tweenMethod;
 		public PopupVO easeType;
 		public PopupVO easeMethod;
+   
+        public TweenComponentValuesEvent onStart = new TweenComponentValuesEvent();
+        public TweenComponentValuesEvent onUpdate = new TweenComponentValuesEvent();
+        public TweenComponentValuesEvent onComplete = new TweenComponentValuesEvent();
 
-		// public TweenComponentValuesOverwrite overwrite;
-		// public TweenPropertyVO[] attributes;
-		// public TweenComponentValuesEvents events;
-
-		// public DTween dTween;
-		// private Dictionary<string, object> dictionary;
-
-
-		// TODO: setup vo objects that are being passed to the wrapper objects.
+		public bool showSetupList = true;
+		public bool showEasingList = true;
+		public bool showUpdateList = true;
+		public bool showOverwriteList = true;
+		public bool showEventList = true;
 
 
 		/**
@@ -87,8 +63,6 @@ namespace DavidOchmann.Animation
 		public void Start()
 		{
 			initVariables();
-
-			// Debug.Log( DavidOchmann.CustomEditorTools.PopupVO );
 		}
 
 		public void FixedUpdate()

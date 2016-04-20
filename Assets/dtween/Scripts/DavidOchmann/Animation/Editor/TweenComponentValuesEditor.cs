@@ -19,9 +19,6 @@ namespace DavidOchmann.Animation
 		private EditorPopup editorPopupComponent;
 		private EditorButton editorButtonAddProperty;
 		private MonoBehaviour[] monoBehaviours;
-		private bool showSetupList = true;
-		private bool showEasingList = true;
-		private bool showUpdateList = true;
 		private EditorPopup tweenMethodPopup;
 		private EditorPopup easeTypePopup;
 		private EditorPopup easeMethodPopup;
@@ -45,13 +42,11 @@ namespace DavidOchmann.Animation
 		{
 			EditorGUILayout.Space();
 			editorPopupComponent.Update();
+
 			updateSetupFields();
-			// EditorGUILayout.Space();
 			updateEasingPopups();
-			// EditorGUILayout.Space();
-			updatePopupFloatFields();
-			// EditorGUILayout.Space();
-			editorButtonAddProperty.Update();
+			updatePropertyFields();
+			updateEventObjectPicker();
 		}
 
 
@@ -76,30 +71,29 @@ namespace DavidOchmann.Animation
 
 
 		/** Setup Field functions. */
-		private void updateIDField()
-		{
-			tweenComponentValues.id = EditorGUILayout.TextField( "ID", tweenComponentValues.id );
-		}
-
-		private void updatePlayOnStart()
-		{
-			tweenComponentValues.playOnStart = EditorGUILayout.Toggle( "Play On Start", tweenComponentValues.playOnStart );
-		}
-
-		private void updateDuration()
-		{
-			tweenComponentValues.duration = EditorGUILayout.FloatField( "Duration", tweenComponentValues.duration );
-		}
-
 		private void updateSetupFields()
 		{
-			showSetupList = EditorGUILayout.Foldout( showSetupList, "Setup" );
+			tweenComponentValues.showSetupList = EditorGUILayout.Foldout( tweenComponentValues.showSetupList, "Setup" );
 
-			if( showSetupList )
+			if( tweenComponentValues.showSetupList )
 			{
-				updateIDField();
-				updatePlayOnStart();
-				updateDuration();
+				tweenComponentValues.id = EditorGUILayout.TextField( "ID", tweenComponentValues.id );
+				tweenComponentValues.duration = EditorGUILayout.FloatField( "Duration", tweenComponentValues.duration );
+				tweenComponentValues.playOnStart = EditorGUILayout.Toggle( "Play On Start", tweenComponentValues.playOnStart );
+
+
+				// overwrite options
+				EditorGUI.indentLevel++;
+
+				tweenComponentValues.showOverwriteList = EditorGUILayout.Foldout( tweenComponentValues.showOverwriteList, "Overwrite" );
+
+				if( tweenComponentValues.showOverwriteList )
+				{
+					tweenComponentValues.allowOverwrite = EditorGUILayout.Toggle( "Allow Overwrite", tweenComponentValues.allowOverwrite );
+					tweenComponentValues.jumpToEnd = EditorGUILayout.Toggle( "Jump To End", tweenComponentValues.jumpToEnd );
+				}
+
+				EditorGUI.indentLevel--;
 			}
 		}
 
@@ -134,14 +128,31 @@ namespace DavidOchmann.Animation
 
 		private void updateEasingPopups()
 		{
-			showEasingList = EditorGUILayout.Foldout( showEasingList, "Easing" );
+			tweenComponentValues.showEasingList = EditorGUILayout.Foldout( tweenComponentValues.showEasingList, "Easing" );
 
-			if( showEasingList )
+			if( tweenComponentValues.showEasingList )
 			{
 				tweenMethodPopup.Update();
 				easeTypePopup.Update();
 				easeMethodPopup.Update();
 			}
+		}
+
+
+		private void updateEventObjectPicker()
+		{
+			tweenComponentValues.showEventList = EditorGUILayout.Foldout( tweenComponentValues.showEventList, "Events" );
+
+			if( tweenComponentValues.showEventList )
+			{
+				serializedObject.Update();
+
+	            EditorGUILayout.PropertyField( serializedObject.FindProperty( "onStart" ), true );
+	            EditorGUILayout.PropertyField( serializedObject.FindProperty( "onUpdate" ), true );
+	            EditorGUILayout.PropertyField( serializedObject.FindProperty( "onComplete" ), true );
+	            
+	            serializedObject.ApplyModifiedProperties();	
+	        }
 		}
 
 
@@ -238,7 +249,7 @@ namespace DavidOchmann.Animation
 
 		private void editorButtonAddPropertyOnClickHandler(EditorButton editorButton)
 		{
-			showUpdateList = true;
+			tweenComponentValues.showUpdateList = true;
 			createPropertyPopup();
 		}
 
@@ -311,11 +322,11 @@ namespace DavidOchmann.Animation
 
 
 		/** Generate and update PopupFloatFields. */
-		private void updatePopupFloatFields()
+		private void updatePropertyFields()
 		{
-			showUpdateList = EditorGUILayout.Foldout( showUpdateList, "Properties" );
+			tweenComponentValues.showUpdateList = EditorGUILayout.Foldout( tweenComponentValues.showUpdateList, "Properties" );
 
-			if( showUpdateList )
+			if( tweenComponentValues.showUpdateList )
 			{
 				List<PopupFloatFieldVO> list = tweenComponentValues.popupFloatFieldVOs;
 
@@ -327,6 +338,8 @@ namespace DavidOchmann.Animation
 				    popupFloatField.OnClose += popupFloatFieldOnCloseHandler;
 				    popupFloatField.Update();
 				}
+
+				editorButtonAddProperty.Update();
 			}
 		}
 
