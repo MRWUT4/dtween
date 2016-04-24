@@ -132,15 +132,15 @@ namespace DavidOchmann.Animation
 		{
 			get 
 		    { 
-		        return ( transform.localRotation ).eulerAngles.x; 
+		        return ( transform.rotation ).eulerAngles.x; 
 		    }
 		
 		    set
 		    { 	
-				Vector3 angles = ( transform.localRotation ).eulerAngles;
+				Vector3 angles = ( transform.rotation ).eulerAngles;
 				Quaternion quaternion = Quaternion.Euler( value, angles.y, angles.z );
 
-				transform.localRotation = quaternion;
+				transform.rotation = quaternion;
 		    }
 		}
 
@@ -148,15 +148,15 @@ namespace DavidOchmann.Animation
 		{
 			get 
 		    { 
-		        return ( transform.localRotation ).eulerAngles.y;
+		        return ( transform.rotation ).eulerAngles.y;
 		    }
 		
 		    set
 		    { 	
-				Vector3 angles = ( transform.localRotation ).eulerAngles;
+				Vector3 angles = ( transform.rotation ).eulerAngles;
 				Quaternion quaternion = Quaternion.Euler( angles.x, value, angles.z );
 
-				transform.localRotation = quaternion;
+				transform.rotation = quaternion;
 		    }
 		}
 
@@ -164,15 +164,15 @@ namespace DavidOchmann.Animation
 		{
 			get 
 		    { 
-		        return ( transform.localRotation ).eulerAngles.z; 
+		        return ( transform.rotation ).eulerAngles.z; 
 		    }
 		
 		    set
 		    { 	
-				Vector3 angles = ( transform.localRotation ).eulerAngles;
+				Vector3 angles = ( transform.rotation ).eulerAngles;
 				Quaternion quaternion = Quaternion.Euler( angles.x, angles.y, value );
 
-				transform.localRotation = quaternion;
+				transform.rotation = quaternion;
 		    }
 		}
 

@@ -18,7 +18,7 @@ namespace DavidOchmann.Animation
 		private List<IUpdate> updateList;
 		private EditorPopup editorPopupComponent;
 		private EditorButton editorButtonAddProperty;
-		private MonoBehaviour[] monoBehaviours;
+		private List<Component> components;
 		private EditorPopup tweenMethodPopup;
 		private EditorPopup easeTypePopup;
 		private EditorPopup easeMethodPopup;
@@ -28,25 +28,15 @@ namespace DavidOchmann.Animation
 		 * Editor interface
 		 */
 
-		public void OnEnable()
-		{
+		public override void OnInspectorGUI()
+		{	
 		    initVariables();
 		    initTweenMethod();
 		    initEaseType();
 		    initEaseMethod();
 			initEditorPopupComponents();
 			initAddPropertyButton();
-		}
-
-		public override void OnInspectorGUI()
-		{
-			EditorGUILayout.Space();
-			editorPopupComponent.Update();
-
-			updateSetupFields();
-			updateEasingPopups();
-			updatePropertyFields();
-			updateEventObjectPicker();
+			initEditorGUIRendering();
 		}
 
 
@@ -57,16 +47,8 @@ namespace DavidOchmann.Animation
 		/** Variables. */
 		private void initVariables()
 		{
-			// updateList = new List<IUpdate>();
 			tweenComponentValues = ( TweenComponentValues )target;
-
-			/*
-			PopupFloatFieldVO popupFloatFieldVO	= tweenComponentValues.popupFloatFieldVO;
-			popupFloatFieldVO.list = new List<string>{ "foo", "bar" };
-
-			PopupFloatField popupFloatField = new PopupFloatField( popupFloatFieldVO );
-			updateList.Add( popupFloatField );
-			//*/
+			components = new List<Component>();
 		}
 
 
@@ -165,16 +147,23 @@ namespace DavidOchmann.Animation
 			List<string> list = new List<string>();
 
 		    GameObject gameObject = tweenComponentValues.gameObject;
-		    monoBehaviours = gameObject.GetComponents<MonoBehaviour>();
+		    Component[] componentList = gameObject.GetComponents<Component>();
 
-		    for( int i = 0; i < monoBehaviours.Length; ++i )
+		    for( int i = 0; i < componentList.Length; ++i )
 		    {
-		        MonoBehaviour monoBehaviour = monoBehaviours[ i ];
+		        Component component = componentList[ i ];
+		        List<string> propertyList = parsePropertiesAndFieldsOf( component );
 
-		        if( monoBehaviour != null )
+		        bool hasFloatProperties = propertyList.Count > 1;
+		        bool isNull = component == null;
+		        bool isTarget = component == tweenComponentValues;
+
+		        if( !isNull && !isTarget && hasFloatProperties )
 		        {
-		        	string name = monoBehaviour.GetType().Name;
+		        	string name = component.GetType().Name;
 		        	list.Add( name );
+
+		        	components.Add( component );
 		        }
 		    }
 
@@ -249,7 +238,7 @@ namespace DavidOchmann.Animation
 
 		private void editorButtonAddPropertyOnClickHandler(EditorButton editorButton)
 		{
-			tweenComponentValues.showUpdateList = true;
+			tweenComponentValues.showPropertyList = true;
 			createPropertyPopup();
 		}
 
@@ -257,13 +246,8 @@ namespace DavidOchmann.Animation
 		/** PopupCloseField list */
 		private void createPropertyPopup()
 		{
-			MonoBehaviour monoBehaviour = monoBehaviours[ editorPopupComponent.index ];
-			
-			List<string> list = new List<string>();
-
-			list = list.Concat( parseComponentPropertiesOf( monoBehaviour ) ).ToList();
-			list = list.Concat( parseComponentFieldsOf( monoBehaviour ) ).ToList();
-
+			Component component = components[ editorPopupComponent.index ];			
+			List<string> list = parsePropertiesAndFieldsOf( component );
 			
 			PopupFloatFieldVO popupFloatFieldVO = new PopupFloatFieldVO();
 			popupFloatFieldVO.list = list;
@@ -272,12 +256,24 @@ namespace DavidOchmann.Animation
 		}
 
 
-		private List<string> parseComponentPropertiesOf(MonoBehaviour monoBehaviour)
+		private List<string> parsePropertiesAndFieldsOf(Component component)
 		{
 			List<string> list = new List<string>();
 
-			Type monoBehaviourType = monoBehaviour.GetType();
-			PropertyInfo[] propertyInfos = monoBehaviourType.GetProperties();
+			list = list.Concat( parseComponentPropertiesOf( component ) ).ToList();
+			list = list.Concat( parseComponentFieldsOf( component ) ).ToList();
+
+			list.Insert( 0, "delay" );
+
+			return list;
+		}
+
+		private List<string> parseComponentPropertiesOf(Component component)
+		{
+			List<string> list = new List<string>();
+
+			Type componentType = component.GetType();
+			PropertyInfo[] propertyInfos = componentType.GetProperties();
 
 			for( int i = 0; i < propertyInfos.Length; ++i )
 			{
@@ -296,12 +292,12 @@ namespace DavidOchmann.Animation
 			return list;
 		}
 
-		private List<string> parseComponentFieldsOf(MonoBehaviour monoBehaviour)
+		private List<string> parseComponentFieldsOf(Component component)
 		{
 			List<string> list = new List<string>();
 
-			Type monoBehaviourType = monoBehaviour.GetType();
-			FieldInfo[] fieldInfos = monoBehaviourType.GetFields();
+			Type componentType = component.GetType();
+			FieldInfo[] fieldInfos = componentType.GetFields();
 
 			for( int i = 0; i < fieldInfos.Length; ++i )
 			{
@@ -324,9 +320,9 @@ namespace DavidOchmann.Animation
 		/** Generate and update PopupFloatFields. */
 		private void updatePropertyFields()
 		{
-			tweenComponentValues.showUpdateList = EditorGUILayout.Foldout( tweenComponentValues.showUpdateList, "Properties" );
+			tweenComponentValues.showPropertyList = EditorGUILayout.Foldout( tweenComponentValues.showPropertyList, "Properties" );
 
-			if( tweenComponentValues.showUpdateList )
+			if( tweenComponentValues.showPropertyList )
 			{
 				List<PopupFloatFieldVO> list = tweenComponentValues.popupFloatFieldVOs;
 
@@ -347,7 +343,6 @@ namespace DavidOchmann.Animation
 		{
 			removePopupFloatFieldVOFromList( popupFloatField.popupFloatFieldVO );
 		}
-
 		
 		private void removePopupFloatFieldVOFromList(PopupFloatFieldVO popupFloatFieldVO)
 		{
@@ -360,6 +355,19 @@ namespace DavidOchmann.Animation
 			    if( item == popupFloatFieldVO )
 			    	list.RemoveAt( i );
 			}
+		}
+
+
+		/** Init EditorGUI rendering oder. */
+		private void initEditorGUIRendering()
+		{
+			EditorGUILayout.Space();
+			editorPopupComponent.Update();
+
+			updateSetupFields();
+			updateEasingPopups();
+			updatePropertyFields();
+			updateEventObjectPicker();
 		}
 	}
 }
